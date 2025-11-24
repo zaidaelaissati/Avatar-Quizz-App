@@ -1,5 +1,6 @@
 import { supabase } from "@/lib/supabase";
 import { Session } from "@supabase/supabase-js";
+import { useRouter } from "expo-router";
 import { createContext, ReactNode, useContext, useEffect, useState } from "react";
 
 interface SupabaseContextProps {
@@ -16,6 +17,7 @@ const SupabaseProvider = ({children} : { children: ReactNode}) => {
     const [loggingIn, setLoggingIn] = useState<boolean>(false);
     const [initializing, setInitializing] = useState<boolean>(true);
     const [session, setSession] = useState<Session | null>(null);
+    const router = useRouter();
 
     useEffect(() => {
         let cancelled = false;
@@ -37,6 +39,11 @@ const SupabaseProvider = ({children} : { children: ReactNode}) => {
         const { data : { subscription }} = supabase.auth.onAuthStateChange((event, newSession) => {
             if (cancelled) return;
             setSession(newSession);
+            if (event === "SIGNED_IN") {
+                router.replace("/dashboard")
+            } else if (event === "SIGNED_OUT") {
+                router.replace("/login");
+            }
         });
 
 
@@ -67,7 +74,7 @@ const SupabaseProvider = ({children} : { children: ReactNode}) => {
 
     return (
         <SupabaseContext.Provider value={{loggingIn, initializing, session, login, logout}}>
-
+            {children}
         </SupabaseContext.Provider>
     )
 }
