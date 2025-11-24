@@ -1,3 +1,4 @@
+import { supabase } from "@/lib/supabase";
 import { Session } from "@supabase/supabase-js";
 import { createContext, ReactNode, useContext, useState } from "react";
 
@@ -16,12 +17,23 @@ const SupabaseProvider = ({children} : { children: ReactNode}) => {
     const [initializing, setInitializing] = useState<boolean>(true);
     const [session, setSession] = useState<Session | null>(null);
 
-    const login = async() => {
-
+    const login = async(email: string, password: string) => {
+        setLoggingIn(true);
+        try {
+            const { error } = await supabase.auth.signInWithPassword({email, password});
+            if (error) throw error;
+        } finally {
+            setLoggingIn(false);
+        }
     }
 
     const logout = async() => {
-
+        try {
+            const { error } = await supabase.auth.signOut();
+            if (error) throw error;
+        } catch (err) {
+            console.log(err);
+        }
     }
 
     return (
