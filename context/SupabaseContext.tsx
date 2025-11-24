@@ -1,6 +1,6 @@
 import { supabase } from "@/lib/supabase";
 import { Session } from "@supabase/supabase-js";
-import { createContext, ReactNode, useContext, useState } from "react";
+import { createContext, ReactNode, useContext, useEffect, useState } from "react";
 
 interface SupabaseContextProps {
     session: Session | null;
@@ -16,6 +16,35 @@ const SupabaseProvider = ({children} : { children: ReactNode}) => {
     const [loggingIn, setLoggingIn] = useState<boolean>(false);
     const [initializing, setInitializing] = useState<boolean>(true);
     const [session, setSession] = useState<Session | null>(null);
+
+    useEffect(() => {
+        let cancelled = false;
+        const init = async() => {
+            try {
+                const { data } = await supabase.auth.getSession();
+                if (cancelled) return;
+                setSession(data.session);
+
+            } catch (e) {
+                console.log("Error fetching session", e);
+            } finally {
+                if (cancelled) return;
+                setInitializing(false);
+            }
+        }
+        init();
+
+        const { data : { subscription }} = supabase.auth.onAuthStateChange((event, newSession) => {
+            if (cancelled) return;
+            setSession(newSession);
+        });
+
+
+        return () => {
+            cancelled = true;
+            subscription.unsubscribe();
+        }
+    }, [])
 
     const login = async(email: string, password: string) => {
         setLoggingIn(true);
