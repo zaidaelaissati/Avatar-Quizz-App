@@ -1,4 +1,3 @@
-import { Database } from "@/database.types";
 import { supabase } from "@/lib/supabase";
 import { Restaurant } from "@/types";
 import { Session } from "@supabase/supabase-js";
@@ -13,7 +12,8 @@ interface SupabaseContextProps {
     initializing: boolean;
     loading: boolean;
     error: Error | null;
-    restaurants: Restaurant[]
+    restaurants: Restaurant[],
+    addRestaurant: (res: Omit<Omit<Restaurant, "id">, "created_at">) => Promise<void>
 }
 
 const SupabaseContext = createContext<SupabaseContextProps | undefined>(undefined);
@@ -27,6 +27,8 @@ const SupabaseProvider = ({children} : { children: ReactNode}) => {
     const [error, setError] = useState<Error | null>(null);
 
     const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
+
+    const [trigger, setTrigger] = useState<number>(0);
     
     const router = useRouter();
 
@@ -83,6 +85,17 @@ const SupabaseProvider = ({children} : { children: ReactNode}) => {
         }
     }
 
+    const addRestaurant = async(restaurant: Omit<Omit<Restaurant, "id">, "created_at">) => {
+        try {
+            const { error } = await supabase.from("restaurants").insert(restaurant);
+            if (error) throw error;
+            setTrigger(trigger => trigger + 1)
+        } catch (e) {
+            console.log(e);
+            throw e;
+        }
+    }
+
     useEffect(() => {
         let cancelled = false;
 
@@ -95,6 +108,8 @@ const SupabaseProvider = ({children} : { children: ReactNode}) => {
                     console.error("Error fetching restaurants");
                     throw error;
                 }
+
+                console.log(data);
 
                 if (cancelled) return;
                 setRestaurants(data);
@@ -112,12 +127,12 @@ const SupabaseProvider = ({children} : { children: ReactNode}) => {
         return () => {
             cancelled = true;
         }
-    }, [])
+    }, [trigger])
 
 
 
     return (
-        <SupabaseContext.Provider value={{loggingIn, initializing, session, login, logout, loading, restaurants, error}}>
+        <SupabaseContext.Provider value={{loggingIn, initializing, session, login, logout, loading, restaurants, error, addRestaurant}}>
             {children}
         </SupabaseContext.Provider>
     )

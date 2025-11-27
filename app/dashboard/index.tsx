@@ -1,21 +1,34 @@
-import { View } from "react-native";
+import { ActivityIndicator, View } from "react-native";
 import { Text } from "@/components/ui/text";
 import { Button } from "@/components/ui/button";
 import { useSupabase } from "@/context/SupabaseContext";
 import MapView, { Marker } from "react-native-maps";
 
 const MapScreen = () => {
-    const { logout } = useSupabase();
+    const { logout, loading, restaurants } = useSupabase();
+    
+    if (loading) {
+        return (
+            <ActivityIndicator animating={true}/>
+        )
+    }
+
+    console.log(restaurants);
 
     return (
         <View className="flex-1">
             <Button onPress={() => logout()}><Text>Logout</Text></Button>
 
             <MapView style={{flex: 1}}>
-                <Marker coordinate={{
-                    latitude: 50.11,
-                    longitude: 2
-                }} title="Ergens in frankrijk"/>
+                {
+                    restaurants.map(restaurant => (
+                        <Marker coordinate={{
+                            latitude: restaurant.latitude,
+                            longitude: restaurant.longitude
+                        }} title={restaurant.title}/>
+                    ))
+                }
+              
             </MapView>
         </View>
     )

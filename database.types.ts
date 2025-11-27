@@ -42,23 +42,23 @@ export type Database = {
         Row: {
           created_at: string
           id: number
-          latitude: number | null
-          longitude: number | null
-          title: string | null
+          latitude: number
+          longitude: number
+          title: string
         }
         Insert: {
           created_at?: string
           id?: number
-          latitude?: number | null
-          longitude?: number | null
-          title?: string | null
+          latitude: number
+          longitude: number
+          title?: string
         }
         Update: {
           created_at?: string
           id?: number
-          latitude?: number | null
-          longitude?: number | null
-          title?: string | null
+          latitude?: number
+          longitude?: number
+          title?: string
         }
         Relationships: []
       }
