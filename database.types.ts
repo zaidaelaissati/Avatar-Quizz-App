@@ -38,7 +38,7 @@ export type Database = {
         }
         Relationships: []
       }
-      restaurant: {
+      restaurants: {
         Row: {
           created_at: string
           id: number

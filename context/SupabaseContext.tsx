@@ -1,4 +1,6 @@
+import { Database } from "@/database.types";
 import { supabase } from "@/lib/supabase";
+import { Restaurant } from "@/types";
 import { Session } from "@supabase/supabase-js";
 import { useRouter } from "expo-router";
 import { createContext, ReactNode, useContext, useEffect, useState } from "react";
@@ -9,6 +11,9 @@ interface SupabaseContextProps {
     logout: () => Promise<void>;
     loggingIn: boolean;
     initializing: boolean;
+    loading: boolean;
+    error: Error | null;
+    restaurants: Restaurant[]
 }
 
 const SupabaseContext = createContext<SupabaseContextProps | undefined>(undefined);
@@ -17,6 +22,12 @@ const SupabaseProvider = ({children} : { children: ReactNode}) => {
     const [loggingIn, setLoggingIn] = useState<boolean>(false);
     const [initializing, setInitializing] = useState<boolean>(true);
     const [session, setSession] = useState<Session | null>(null);
+
+    const [loading, setLoading] = useState<boolean>(false);
+    const [error, setError] = useState<Error | null>(null);
+
+    const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
+    
     const router = useRouter();
 
     useEffect(() => {
@@ -72,8 +83,41 @@ const SupabaseProvider = ({children} : { children: ReactNode}) => {
         }
     }
 
+    useEffect(() => {
+        let cancelled = false;
+
+        const fetchRestaurants = async() => {
+
+            try {
+                setLoading(true);
+                const {data, error } = await supabase.from("restaurants").select("*");
+                if (error) {
+                    console.error("Error fetching restaurants");
+                    throw error;
+                }
+
+                if (cancelled) return;
+                setRestaurants(data);
+
+            } catch (e) {
+                setError(e as Error);
+            } finally {
+                setLoading(false);
+            }
+
+        }
+
+        fetchRestaurants();
+        
+        return () => {
+            cancelled = true;
+        }
+    }, [])
+
+
+
     return (
-        <SupabaseContext.Provider value={{loggingIn, initializing, session, login, logout}}>
+        <SupabaseContext.Provider value={{loggingIn, initializing, session, login, logout, loading, restaurants, error}}>
             {children}
         </SupabaseContext.Provider>
     )
