@@ -1,89 +1,175 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { useContext, useState } from "react";
+import { View, Text, Pressable, StyleSheet, ScrollView } from "react-native";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Separator } from "@/components/ui/separator";
-import { Text } from "@/components/ui/text";
 import { Button } from "@/components/ui/button";
-import { Pressable, View } from "react-native";
-import { useState } from "react";
+import { Separator } from "@/components/ui/separator";
 import { useSupabase } from "@/context/SupabaseContext";
 import { useRouter } from "expo-router";
+import * as Haptics from "expo-haptics";
+import { ThemeContext } from "@/context/ThemeContext";
 
 const LoginScreen = () => {
-    const [email ,setEmail] = useState<string>("");
-    const [password, setPassword] = useState<string>("");
-    
-    const { login } = useSupabase();
-    const router = useRouter();
+  const { theme } = useContext(ThemeContext);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const { login } = useSupabase();
+  const router = useRouter();
 
-    const handleLogin = async() => {
-        try {
-            await login(email, password);
-        } catch (e) {
-            alert(e);
-        }
+  const handleLogin = async () => {
+    try {
+      await login(email, password);
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    } catch (e: any) {
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+      alert(e.message);
     }
+  };
 
-    return (
-        <View className="flex-1 justify-center items-center">
-            <Card className="border-border/0 sm:border-border shadow-none sm:shadow-sm sm:shadow-black/5">
-                <CardContent className="gap-6">
-                    <View className="gap-6">
-                        <View className="gap-1.5">
-                            <Label htmlFor="email">Email</Label>
-                            <Input
-                                value={email}
-                                onChangeText={(text) => setEmail(text)}
-                                id="email"
-                                placeholder="m@example.com"
-                                keyboardType="email-address"
-                                autoComplete="email"
-                                autoCapitalize="none"
-                                returnKeyType="next"
-                                submitBehavior="submit"
-                            />
-                        </View>
-                        <View className="gap-1.5">
-                            <View className="flex-row items-center">
-                                <Label htmlFor="password">Password</Label>
-                                <Button
-                                    variant="link"
-                                    size="sm"
-                                    className="web:h-fit ml-auto h-4 px-1 py-0 sm:h-4"
-                                    onPress={() => {
-                                        // TODO: Navigate to forgot password screen
-                                    }}>
-                                    <Text className="font-normal leading-4">Forgot your password?</Text>
-                                </Button>
-                            </View>
-                            <Input
-                                value={password}
-                                onChangeText={(text) => setPassword(text)}
-                                id="password"
-                                secureTextEntry
-                                returnKeyType="send"
-                            />
-                        </View>
-                        <Button className="w-full" onPress={handleLogin} >
-                            <Text>Continue</Text>
-                        </Button>
-                    </View>
-                    <View className="flex-row gap-2">
-                    <Text className="text-center text-sm">
-                        Don&apos;t have an account?{' '}
-                        
-                    </Text>
-                    <Pressable
-                            onPress={() => {
-                                router.push("/signup");
-                            }}>
-                            <Text className="text-sm underline underline-offset-4">Sign up</Text>
-                        </Pressable>
-                        </View>
-                </CardContent>
-            </Card>
-        </View>
-    )
-}
+  // Dynamische kleuren op basis van light/dark modus dus de waterkleuren vr dark, en vuurkleuren vr lightmode
+  const bgColor = theme === "light" ? "#FFEDB3" : "#111";
+  const cardBg = theme === "light" ? "rgba(255,255,255,0.85)" : "#222";
+  const textColor = theme === "light" ? "#000" : "#fff";
+  const labelColor = theme === "light" ? "#1E40AF" : "#93C5FD";
+  const inputBg = theme === "light" ? "#fff" : "#333";
+  const placeholderColor = theme === "light" ? "#555" : "#aaa";
+  const buttonBg = theme === "light" ? "#A53335": "#93C5FD";
+  const inputBorderColor = theme === "light" ? "#A53335" : "#93C5FD";
+
+  return (
+    <ScrollView style={{ flex: 1, backgroundColor: bgColor }}>
+      <View style={styles.container}>
+        <Card style={[styles.card, { backgroundColor: cardBg }]}>
+          {/* Header */}
+          <CardHeader style={{ alignItems: "center", marginBottom: 8 }}>
+            <CardTitle style={[styles.title, { color: textColor }]}>Avatar Login</CardTitle>
+            <CardDescription style={{ color: textColor, textAlign: "center" }} />
+          </CardHeader>
+
+          {/* Content */}
+          <CardContent style={{ gap: 32 }}>
+            {/* Email */}
+            <View style={{ gap: 8 }}>
+              <Label style={{ fontWeight: "700", color: labelColor }}>Email</Label>
+              <Input
+                value={email}
+                onChangeText={setEmail}
+                placeholder="katara@watertribe.com"
+                placeholderTextColor={placeholderColor}
+                style={{
+                  backgroundColor: inputBg,
+                  color: textColor,
+                  borderWidth: 2,
+                  borderColor: inputBorderColor,
+                  borderRadius: 8,
+                  paddingHorizontal: 12,
+                  paddingVertical: 8,
+                }}
+              />
+            </View>
+
+            {/* Password */}
+            <View style={{ gap: 8 }}>
+              <Label style={{ fontWeight: "700", color: labelColor }}>Wachtwoord</Label>
+              <Input
+                value={password}
+                onChangeText={setPassword}
+                secureTextEntry
+                placeholder="••••••••"
+                placeholderTextColor={placeholderColor}
+                style={{
+                  backgroundColor: inputBg,
+                  color: textColor,
+                  borderWidth: 2,
+                  borderColor: inputBorderColor,
+                  borderRadius: 8,
+                  paddingHorizontal: 12,
+                  paddingVertical: 8,
+                }}
+              />
+            </View>
+
+            {/* Login Button */}
+            <Button onPress={handleLogin} style={{ backgroundColor: buttonBg }}>
+              <Text style={{ color: "#fff", fontWeight: "700", textAlign: "center" }}>LOGIN</Text>
+            </Button>
+
+            {/* Separator */}
+            <Separator style={{ backgroundColor: theme === "light" ? "#9CA3AF" : "#555", height: 1 }} /> 
+          {/*seperator is de lijn tussen login en tekst , die ook veraner bij light/dark mode*/}
+
+          {/* Register link */}
+            <Text style={{ textAlign: "center", color: textColor }}>
+              Nog geen account?{" "}
+              <Pressable onPress={() => router.push("/signup")} >
+                <Text style={{ color: "#2563EB", textDecorationLine: "underline", fontWeight: "700"}}>
+                  Word een Avatar
+                </Text>
+              </Pressable>
+            </Text>
+
+            {/* Avatar elementen onderaan */}
+            <View style={styles.elementsRow}>
+              <View style={styles.element}>
+                <Text style={[styles.elementIcon, { color: "#3B82F6" }]}>💧</Text>
+                <Text style={[styles.elementLabel, { color: textColor }]}>Water</Text>
+              </View>
+              <View style={styles.element}>
+                <Text style={[styles.elementIcon, { color: "#16A34A" }]}>🌿</Text>
+                <Text style={[styles.elementLabel, { color: textColor }]}>Earth</Text>
+              </View>
+              <View style={styles.element}>
+                <Text style={[styles.elementIcon, { color: "#EF4444" }]}>🔥</Text>
+                <Text style={[styles.elementLabel, { color: textColor }]}>Fire</Text>
+              </View>
+              <View style={styles.element}>
+                <Text style={[styles.elementIcon, { color: "#CBD5E1" }]}>💨</Text>
+                <Text style={[styles.elementLabel, { color: textColor }]}>Air</Text>
+              </View>
+            </View>
+          </CardContent>
+        </Card>
+      </View>
+    </ScrollView>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 24,
+  },
+  card: {
+    width: "100%",
+    maxWidth: 384,
+    borderRadius: 16,
+    padding: 16,
+  },
+  title: {
+    fontSize: 32,
+    fontWeight: "900",
+  },
+  elementsRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: 24,
+    paddingHorizontal: 8,
+  },
+  element: {
+    alignItems: "center",
+    flex: 1,
+  },
+  elementIcon: {
+    fontSize: 32,
+    marginBottom: 4,
+  },
+  elementLabel: {
+    fontWeight: "600",
+    fontSize: 12,
+  },
+});
 
 export default LoginScreen;

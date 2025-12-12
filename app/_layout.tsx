@@ -1,28 +1,57 @@
+import React, { useContext } from "react";
 import SupabaseProvider from "@/context/SupabaseContext";
-import '@/global.css';
-
-import { NAV_THEME } from '@/lib/theme';
-import { ThemeProvider } from '@react-navigation/native';
-import { PortalHost } from '@rn-primitives/portal';
-import { Stack } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
-import { useColorScheme } from 'nativewind';
-
-export {
-  // Catch any errors thrown by the Layout component.
-  ErrorBoundary,
-} from 'expo-router';
+import AppThemeProvider, { ThemeContext } from "@/context/ThemeContext";
+import { UserProvider } from "@/context/UserContext"; // <-- importeren
+import { Stack } from "expo-router";
+import { StatusBar } from "expo-status-bar";
+import { PortalHost } from "@rn-primitives/portal";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 export default function RootLayout() {
-  const { colorScheme } = useColorScheme();
-
   return (
     <SupabaseProvider>
-        <ThemeProvider value={NAV_THEME[colorScheme ?? 'light']}>
-        <StatusBar style={colorScheme === 'dark' ? 'light' : 'dark'} />
-        <Stack />
-        <PortalHost />
-        </ThemeProvider>
+      <AppThemeProvider>
+        <UserProvider> 
+          <InnerLayout />
+        </UserProvider>
+      </AppThemeProvider>
     </SupabaseProvider>
+  );
+}
+
+function InnerLayout() {
+  const { theme } = useContext(ThemeContext);
+
+  return (
+    <>
+      <StatusBar style={theme === "dark" ? "light" : "dark"} />
+      <Stack>
+        <Stack.Screen
+          name="login"
+          options={{
+            title: "Login",
+            headerRight: () => <ThemeToggle />,
+            headerShown: true,
+          }}
+        />
+        <Stack.Screen
+          name="signup"
+          options={{
+            title: "Registreren",
+            headerRight: () => <ThemeToggle />,
+            headerShown: true,
+          }}
+        />
+        <Stack.Screen
+          name="dashboard"
+          options={{
+            title: "Dashboard",
+            headerRight: () => <ThemeToggle />,
+          }}
+        />
+        <Stack.Screen name="index" options={{ headerShown: true }} />
+      </Stack>
+      <PortalHost />
+    </>
   );
 }

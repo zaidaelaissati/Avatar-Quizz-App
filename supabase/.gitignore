@@ -6,3 +6,13 @@
 .env.keys
 .env.local
 .env.*.local
+#node
+node_modules/
+.expo/
+.expo-shared/
+ios/
+android/
+.env
+*.log
+dist/
+.vscode/
