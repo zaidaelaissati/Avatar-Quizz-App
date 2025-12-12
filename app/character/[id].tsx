@@ -1,72 +1,98 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { View, Text, Image, ScrollView, StyleSheet } from 'react-native';
 import { useLocalSearchParams } from 'expo-router';
-
-interface Character {
-  id: number;
-  name: string;
-  image: string;
-  bio: {
-    alternativeNames?: string[] | string;
-    nationality?: string;
-    ethnicity?: string;
-    ages?: string[] | string;
-    born?: string;
-    died?: string[] | string;
-  };
-  personalInformation?: {
-    loveInterest?: string;
-    weaponsOfChoice?: string[] | string;
-    fightingStyles?: string[] | string;
-  };
-}
+import { Character } from '../types';
+import { ThemeContext } from '@/context/ThemeContext';
 
 const CharacterDetail = () => {
+  const { theme } = useContext(ThemeContext);
   const { id } = useLocalSearchParams<{ id: string }>();
   const [character, setCharacter] = useState<Character | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+
+  // kleuren light/dark mode
+  const colors = {
+    bg: theme === 'light' ? '#f8f4e9' : '#121212',
+    card: theme === 'light' ? '#fff8f0' : '#1e1e1e',
+    textPrimary: theme === 'light' ? '#2b3a67' : '#eee',
+    textSecondary: theme === 'light' ? '#555' : '#ccc',
+    accent: theme === 'light' ? '#b22222' : '#ff9999',
+    border: theme === 'light' ? '#e2c79c' : '#444',
+    shadow: '#000',
+  };
 
   useEffect(() => {
     const fetchCharacter = async () => {
-      const response = await fetch('https://sampleapis.assimilate.be/avatar/characters');
-      const data: Character[] = await response.json();
-      const found = data.find((c) => c.id.toString() === id);
-      setCharacter(found || null);
+      setLoading(true);
+      setError(false);
+      try {
+        const response = await fetch('https://sampleapis.assimilate.be/avatar/characters');
+        const data: Character[] = await response.json();
+        const found = data.find((c) => c.id.toString() === id);
+        setCharacter(found || null);
+      } catch (err) {
+        console.log(err);
+        setError(true);
+      } finally {
+        setLoading(false);
+      }
     };
     fetchCharacter();
   }, [id]);
 
-  if (!character)
+  // Toon loading
+  if (loading) {
     return (
-      <View style={[styles.container, styles.center]}>
-        <Text style={styles.loading}>Loading...</Text>
+      <View style={[styles.container, styles.center, { backgroundColor: colors.bg }]}>
+        <Text style={[styles.loading, { color: colors.textPrimary }]}>Loading...</Text>
       </View>
     );
+  }
+
+  // Toon error
+  if (error) {
+    return (
+      <View style={[styles.container, styles.center, { backgroundColor: colors.bg }]}>
+        <Text style={[styles.loading, { color: colors.accent }]}>Er is iets fout gegaan</Text>
+      </View>
+    );
+  }
+
+  if (!character) {
+    return (
+      <View style={[styles.container, styles.center, { backgroundColor: colors.bg }]}>
+        <Text style={[styles.loading, { color: colors.accent }]}>Character niet gevonden</Text>
+      </View>
+    );
+  }
 
   const renderDetail = (label: string, value: any) => {
     if (!value || value === "NA") return null;
-
     const formatted = Array.isArray(value) ? value.join(', ') : value;
-
     return (
-      <Text style={styles.infoText}>
-        <Text style={styles.label}>{label}: </Text>
+      <Text style={[styles.infoText, { color: colors.textSecondary }]}>
+        <Text style={[styles.label, { color: colors.accent }]}>{label}: </Text>
         {formatted}
       </Text>
     );
   };
 
   return (
-    <ScrollView style={styles.container}>
-      {/* IMAGE */}
-      <Image source={{ uri: character.image }} style={styles.avatarImage} resizeMode="contain" />
+    <ScrollView style={[styles.container, { backgroundColor: colors.bg }]}>
+      {/* afbeelding */}
+      <Image 
+        source={{ uri: character.image }} 
+        style={[styles.avatarImage, { borderColor: colors.accent }]} 
+        resizeMode="contain" 
+      />
 
-      {/* NAME */}
-      <Text style={styles.nameText}>{character.name}</Text>
+      {/* naam */}
+      <Text style={[styles.nameText, { color: colors.accent }]}>{character.name}</Text>
 
-      {/* BIO */}
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Bio</Text>
-
+      {/* bio */}
+      <View style={[styles.section, { backgroundColor: colors.card, borderColor: colors.border, shadowColor: colors.shadow }]}>
+        <Text style={[styles.sectionTitle, { color: colors.textPrimary }]}>Bio</Text>
         {renderDetail("Alternative Names", character.bio?.alternativeNames)}
         {renderDetail("Nationality", character.bio?.nationality)}
         {renderDetail("Ethnicity", character.bio?.ethnicity)}
@@ -75,11 +101,10 @@ const CharacterDetail = () => {
         {renderDetail("Died", character.bio?.died)}
       </View>
 
-      {/* PERSONAL INFORMATION */}
+      {/* Personal info */}
       {character.personalInformation && (
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Personal Information</Text>
-
+        <View style={[styles.section, { backgroundColor: colors.card, borderColor: colors.border, shadowColor: colors.shadow }]}>
+          <Text style={[styles.sectionTitle, { color: colors.textPrimary }]}>Personal Information</Text>
           {renderDetail("Love Interest", character.personalInformation.loveInterest)}
           {renderDetail("Weapons of Choice", character.personalInformation.weaponsOfChoice)}
           {renderDetail("Fighting Styles", character.personalInformation.fightingStyles)}
@@ -90,55 +115,15 @@ const CharacterDetail = () => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#f0e6d2',
-    padding: 15,
-  },
-  center: {
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  loading: {
-    fontSize: 18,
-    color: '#444',
-  },
-  avatarImage: {
-    width: '100%',
-    height: 300,
-    borderRadius: 12,
-    marginBottom: 20,
-  },
-  nameText: {
-    fontSize: 30,
-    fontWeight: 'bold',
-    color: '#8b0000',
-    textAlign: 'center',
-    marginBottom: 20,
-  },
-  section: {
-    backgroundColor: '#fff8f0',
-    padding: 15,
-    borderRadius: 12,
-    borderWidth: 2,
-    borderColor: '#e2c79c',
-    marginBottom: 20,
-  },
-  sectionTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#2b3a67',
-    marginBottom: 10,
-  },
-  label: {
-    fontWeight: 'bold',
-    color: '#8b0000',
-  },
-  infoText: {
-    fontSize: 15,
-    color: '#333',
-    marginBottom: 6,
-  },
+  container: { flex: 1, padding: 15 },
+  center: { justifyContent: 'center', alignItems: 'center' },
+  loading: { fontSize: 18 },
+  avatarImage: { width: '100%', height: 300, borderRadius: 12, marginBottom: 20, borderWidth: 2 },
+  nameText: { fontSize: 30, fontWeight: 'bold', textAlign: 'center', marginBottom: 20 },
+  section: { padding: 15, borderRadius: 12, borderWidth: 2, marginBottom: 20, shadowOffset: { width: 0, height: 3 }, shadowOpacity: 0.2, shadowRadius: 4, elevation: 3 },
+  sectionTitle: { fontSize: 20, fontWeight: 'bold', marginBottom: 10 },
+  label: { fontWeight: 'bold' },
+  infoText: { fontSize: 15, marginBottom: 6 },
 });
 
 export default CharacterDetail;

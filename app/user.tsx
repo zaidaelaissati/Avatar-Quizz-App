@@ -61,11 +61,10 @@ export default function UserPage() {
     <View style={[styles.container, { backgroundColor: colors.bg }]}>
       <Pressable onPress={pickImage} style={styles.avatarWrapper}>
         <Image
-          source={{
-            uri: avatar ?? "https://avatar-placeholder.iran.liara.run/public/boy?random=1",
-          }}
-          style={[styles.avatar, { borderColor: colors.avatarBorder }]}
-        />
+  source={ avatar ? { uri: avatar } : require('@/assets/images/lucht.png') }
+  style={[styles.avatar, { borderColor: colors.avatarBorder }]}
+/>
+
         <Text style={[styles.changeAvatar, { color: colors.changeAvatar }]}>
           Change Avatar
         </Text>

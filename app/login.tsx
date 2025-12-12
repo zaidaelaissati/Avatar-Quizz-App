@@ -1,22 +1,22 @@
-import { useContext, useState } from "react";
-import { View, Text, Pressable, StyleSheet, ScrollView } from "react-native";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
-import { useSupabase } from "@/context/SupabaseContext";
-import { useRouter } from "expo-router";
-import * as Haptics from "expo-haptics";
-import { ThemeContext } from "@/context/ThemeContext";
+import { useContext, useState } from 'react';
+import { View, Text, Pressable, StyleSheet, ScrollView, TextInput } from 'react-native';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Button } from '@/components/ui/button';
+import { Separator } from '@/components/ui/separator';
+import { useSupabase } from '@/context/SupabaseContext';
+import { useRouter } from 'expo-router';
+import * as Haptics from 'expo-haptics';
+import { ThemeContext } from '@/context/ThemeContext';
 
 const LoginScreen = () => {
   const { theme } = useContext(ThemeContext);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const { login } = useSupabase();
   const router = useRouter();
-
+  const [showPassword, setShowPassword] = useState(false); // een toggle maken waar als je presst je ww kan zien/niet zien
   const handleLogin = async () => {
     try {
       await login(email, password);
@@ -28,30 +28,30 @@ const LoginScreen = () => {
   };
 
   // Dynamische kleuren op basis van light/dark modus dus de waterkleuren vr dark, en vuurkleuren vr lightmode
-  const bgColor = theme === "light" ? "#FFEDB3" : "#111";
-  const cardBg = theme === "light" ? "rgba(255,255,255,0.85)" : "#222";
-  const textColor = theme === "light" ? "#000" : "#fff";
-  const labelColor = theme === "light" ? "#1E40AF" : "#93C5FD";
-  const inputBg = theme === "light" ? "#fff" : "#333";
-  const placeholderColor = theme === "light" ? "#555" : "#aaa";
-  const buttonBg = theme === "light" ? "#A53335": "#93C5FD";
-  const inputBorderColor = theme === "light" ? "#A53335" : "#93C5FD";
+  const bgColor = theme === 'light' ? '#FFEDB3' : '#111';
+  const cardBg = theme === 'light' ? 'rgba(255,255,255,0.85)' : '#222';
+  const textColor = theme === 'light' ? '#000' : '#fff';
+  const labelColor = theme === 'light' ? '#1E40AF' : '#93C5FD';
+  const inputBg = theme === 'light' ? '#fff' : '#333';
+  const placeholderColor = theme === 'light' ? '#555' : '#aaa';
+  const buttonBg = theme === 'light' ? '#A53335' : '#93C5FD';
+  const inputBorderColor = theme === 'light' ? '#A53335' : '#93C5FD';
 
   return (
     <ScrollView style={{ flex: 1, backgroundColor: bgColor }}>
       <View style={styles.container}>
         <Card style={[styles.card, { backgroundColor: cardBg }]}>
           {/* Header */}
-          <CardHeader style={{ alignItems: "center", marginBottom: 8 }}>
+          <CardHeader style={{ alignItems: 'center', marginBottom: 8 }}>
             <CardTitle style={[styles.title, { color: textColor }]}>Avatar Login</CardTitle>
-            <CardDescription style={{ color: textColor, textAlign: "center" }} />
+            <CardDescription style={{ color: textColor, textAlign: 'center' }} />
           </CardHeader>
 
           {/* Content */}
           <CardContent style={{ gap: 32 }}>
             {/* Email */}
             <View style={{ gap: 8 }}>
-              <Label style={{ fontWeight: "700", color: labelColor }}>Email</Label>
+              <Label style={{ fontWeight: '700', color: labelColor }}>Email</Label>
               <Input
                 value={email}
                 onChangeText={setEmail}
@@ -70,40 +70,52 @@ const LoginScreen = () => {
             </View>
 
             {/* Password */}
-            <View style={{ gap: 8 }}>
-              <Label style={{ fontWeight: "700", color: labelColor }}>Wachtwoord</Label>
-              <Input
-                value={password}
-                onChangeText={setPassword}
-                secureTextEntry
-                placeholder="••••••••"
-                placeholderTextColor={placeholderColor}
+            <View style={{ marginTop: 8 }}>
+              <Label style={{ fontWeight: '700', color: labelColor }}>Wachtwoord</Label>
+              <View
                 style={{
-                  backgroundColor: inputBg,
-                  color: textColor,
+                  flexDirection: 'row',
+                  alignItems: 'center',
                   borderWidth: 2,
                   borderColor: inputBorderColor,
                   borderRadius: 8,
+                  backgroundColor: inputBg,
                   paddingHorizontal: 12,
-                  paddingVertical: 8,
-                }}
-              />
+                  paddingVertical: 0,
+                }}>
+                <TextInput
+                  value={password}
+                  onChangeText={setPassword}
+                  placeholder="••••••••"
+                  placeholderTextColor={placeholderColor}
+                  secureTextEntry={!showPassword} // hier toggle ik zichtbaarheid met emiji
+                  style={{ flex: 1, color: textColor, paddingVertical: 10 }}
+                />
+                <Pressable onPress={() => setShowPassword(!showPassword)}>
+                  <Text style={{ fontSize: 18, color: textColor, paddingHorizontal: 8 }}>
+                    {showPassword ? '👁️' : '👁️'} 
+                  </Text>
+                </Pressable>
+              </View>
             </View>
 
             {/* Login Button */}
             <Button onPress={handleLogin} style={{ backgroundColor: buttonBg }}>
-              <Text style={{ color: "#fff", fontWeight: "700", textAlign: "center" }}>LOGIN</Text>
+              <Text style={{ color: '#fff', fontWeight: '700', textAlign: 'center' }}>LOGIN</Text>
             </Button>
 
             {/* Separator */}
-            <Separator style={{ backgroundColor: theme === "light" ? "#9CA3AF" : "#555", height: 1 }} /> 
-          {/*seperator is de lijn tussen login en tekst , die ook veraner bij light/dark mode*/}
+            <Separator
+              style={{ backgroundColor: theme === 'light' ? '#9CA3AF' : '#555', height: 1 }}
+            />
+            {/*seperator is de lijn tussen login en tekst , die ook veraner bij light/dark mode*/}
 
-          {/* Register link */}
-            <Text style={{ textAlign: "center", color: textColor }}>
-              Nog geen account?{" "}
-              <Pressable onPress={() => router.push("/signup")} >
-                <Text style={{ color: "#2563EB", textDecorationLine: "underline", fontWeight: "700"}}>
+            {/* Register link */}
+            <Text style={{ textAlign: 'center', color: textColor }}>
+              Nog geen account?{' '}
+              <Pressable onPress={() => router.push('/signup')}>
+                <Text
+                  style={{ color: '#2563EB', textDecorationLine: 'underline', fontWeight: '700' }}>
                   Word een Avatar
                 </Text>
               </Pressable>
@@ -112,19 +124,19 @@ const LoginScreen = () => {
             {/* Avatar elementen onderaan */}
             <View style={styles.elementsRow}>
               <View style={styles.element}>
-                <Text style={[styles.elementIcon, { color: "#3B82F6" }]}>💧</Text>
+                <Text style={[styles.elementIcon, { color: '#3B82F6' }]}>💧</Text>
                 <Text style={[styles.elementLabel, { color: textColor }]}>Water</Text>
               </View>
               <View style={styles.element}>
-                <Text style={[styles.elementIcon, { color: "#16A34A" }]}>🌿</Text>
+                <Text style={[styles.elementIcon, { color: '#16A34A' }]}>🌿</Text>
                 <Text style={[styles.elementLabel, { color: textColor }]}>Earth</Text>
               </View>
               <View style={styles.element}>
-                <Text style={[styles.elementIcon, { color: "#EF4444" }]}>🔥</Text>
+                <Text style={[styles.elementIcon, { color: '#EF4444' }]}>🔥</Text>
                 <Text style={[styles.elementLabel, { color: textColor }]}>Fire</Text>
               </View>
               <View style={styles.element}>
-                <Text style={[styles.elementIcon, { color: "#CBD5E1" }]}>💨</Text>
+                <Text style={[styles.elementIcon, { color: '#CBD5E1' }]}>💨</Text>
                 <Text style={[styles.elementLabel, { color: textColor }]}>Air</Text>
               </View>
             </View>
@@ -138,28 +150,28 @@ const LoginScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
     padding: 24,
   },
   card: {
-    width: "100%",
+    width: '100%',
     maxWidth: 384,
     borderRadius: 16,
     padding: 16,
   },
   title: {
     fontSize: 32,
-    fontWeight: "900",
+    fontWeight: '900',
   },
   elementsRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     marginTop: 24,
     paddingHorizontal: 8,
   },
   element: {
-    alignItems: "center",
+    alignItems: 'center',
     flex: 1,
   },
   elementIcon: {
@@ -167,7 +179,7 @@ const styles = StyleSheet.create({
     marginBottom: 4,
   },
   elementLabel: {
-    fontWeight: "600",
+    fontWeight: '600',
     fontSize: 12,
   },
 });

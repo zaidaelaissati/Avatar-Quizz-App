@@ -5,15 +5,15 @@ import {
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { MaterialCommunityIcons } from '@expo/vector-icons'; 
 import { ThemeContext } from '@/context/ThemeContext';
-
-interface Episode {
-    id: number;
-    Season: string; 
-    NumInSeason: string; 
-    Title: string;
-    OriginalAirDate: string;
-    Description?: string; 
-}
+import { Episode } from './types';
+// interface Episode {
+//     id: number;
+//     Season: string; 
+//     NumInSeason: string; 
+//     Title: string;
+//     OriginalAirDate: string;
+//     Description?: string; 
+// }
 
 const SEASONS = ['1', '2', '3'];
 
