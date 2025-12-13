@@ -1,73 +1,70 @@
-# Minimal Template
+# 🌀 Avatar Quiz App
 
-This is a [React Native](https://reactnative.dev/) project built with [Expo](https://expo.dev/) and [React Native Reusables](https://reactnativereusables.com).
-
-It was initialized using the following command:
-
-```bash
-npx @react-native-reusables/cli@latest init -t restaurants-app
-```
-
-## Getting Started
-
-To run the development server:
-
-```bash
-    npm run dev
-    # or
-    yarn dev
-    # or
-    pnpm dev
-    # or
-    bun dev
-```
-
-This will start the Expo Dev Server. Open the app in:
-
-- **iOS**: press `i` to launch in the iOS simulator _(Mac only)_
-- **Android**: press `a` to launch in the Android emulator
-- **Web**: press `w` to run in a browser
-
-You can also scan the QR code using the [Expo Go](https://expo.dev/go) app on your device. This project fully supports running in Expo Go for quick testing on physical devices.
-
-## Adding components
-
-You can add more reusable components using the CLI:
-
-```bash
-npx react-native-reusables/cli@latest add [...components]
-```
-
-> e.g. `npx react-native-reusables/cli@latest add input textarea`
-
-If you don't specify any component names, you'll be prompted to select which components to add interactively. Use the `--all` flag to install all available components at once.
-
-## Project Features
-
-- ⚛️ Built with [Expo Router](https://expo.dev/router)
-- 🎨 Styled with [Tailwind CSS](https://tailwindcss.com/) via [Nativewind](https://www.nativewind.dev/)
-- 📦 UI powered by [React Native Reusables](https://github.com/founded-labs/react-native-reusables)
-- 🚀 New Architecture enabled
-- 🔥 Edge to Edge enabled
-- 📱 Runs on iOS, Android, and Web
-
-## Learn More
-
-To dive deeper into the technologies used:
-
-- [React Native Docs](https://reactnative.dev/docs/getting-started)
-- [Expo Docs](https://docs.expo.dev/)
-- [Nativewind Docs](https://www.nativewind.dev/)
-- [React Native Reusables](https://reactnativereusables.com)
-
-## Deploy with EAS
-
-The easiest way to deploy your app is with [Expo Application Services (EAS)](https://expo.dev/eas).
-
-- [EAS Build](https://docs.expo.dev/build/introduction/)
-- [EAS Updates](https://docs.expo.dev/eas-update/introduction/)
-- [EAS Submit](https://docs.expo.dev/submit/introduction/)
+✨ Een interactieve app voor **Avatar: The Last Airbender** fans, waarin gebruikers quizzes kunnen doen, informatie over personages kunnen bekijken, hun profiel beheren, merchandise winkels ontdekken én een account aanmaken of inloggen via Supabase.
 
 ---
 
-If you enjoy using React Native Reusables, please consider giving it a ⭐ on [GitHub](https://github.com/founded-labs/react-native-reusables). Your support means a lot!
+## 🎯 Functies
+
+- 🔑 **Login & Registratie:** Maak een account aan of log in via Supabase.  
+- 📝 **Quizzes:** Doe mee aan Avatar-quizzes en ontdek jouw favoriete element.  
+- 📺 **Filter op afleveringen/seizoenen:** Kies vragen uit specifieke episodes of seizoenen.  
+- 🧑‍🎤 **Personage informatie:** Bekijk details over Avatar characters (element, achtergrond, rating).  
+- 📊 **Score bijhouden:** Houd je laatst gespeelde quizscore bij.  
+- ⏱️ **Laatst gespeeld:** Bekijk wanneer je quizzes recent hebt gespeeld.  
+- 🗺️ **Merch winkels:** Vind winkels die Avatar-merch verkopen via een interactieve kaart.  
+- 🖌️ **Profiel aanpassen:** Update je profielfoto en naam aan je persoonlijke voorkeuren.  
+- 🌐 **Web compatibiliteit:** Op web wordt een map placeholder getoond; mobiel toont echte markers.  
+- 🖐️ **Haptics feedback:** Voel lichte trillingen bij interacties.  
+- 🖼️ **Profielfoto uploaden:** Upload een eigen afbeelding via Image Picker.  
+
+---
+
+## 🛠️ Technologieën
+
+- **React Native / Expo** – cross-platform app  
+- **TypeScript** – type safety  
+- **Expo Router** – navigatie & routing  
+- **Supabase** – backend, auth en data storage  
+- **react-native-maps** – interactieve maps (mobiel)  
+- **Expo Haptics** – trillingen bij interactie  
+- **Expo Image Picker** – profielfoto’s uploaden  
+
+---
+
+## ⚡ Installatie
+
+1. Clone de repo:  
+```bash
+git clone https://github.com/yourusername/avatar-quiz-app.git
+cd avatar-quiz-app
+```
+Installeer dependencies:
+```bash
+npm install
+```
+
+Start de app:
+```bash
+npx expo start
+```
+
+📱 Gebruik
+
+Mobiel: Scan de QR-code in Expo Go of start de iOS/Android simulator.
+
+Web: Start met expo start --web. De map wordt vervangen door een placeholder.
+
+Login & Registratie: Maak een account aan, ontvang een verificatie link in je mailbox en log in.
+
+Quizzes: Selecteer een quiz, filter op afleveringen/seizoenen, beantwoord vragen en bekijk je score.
+
+Laatst gespeeld: Bekijk welke quizzes je recent hebt gespeeld.
+
+Personages: Klik op een character om details te bekijken.
+
+Profiel: Pas je profielinformatie aan en upload je profielfoto via Image Picker.
+
+Haptics: Voel lichte trillingen bij interacties.
+
+Winkels: Bekijk merch winkels via de kaart (mobiel) of placeholder (web).
