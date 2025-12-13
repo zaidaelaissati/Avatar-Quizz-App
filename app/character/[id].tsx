@@ -6,7 +6,7 @@ import { ThemeContext } from '@/context/ThemeContext';
 
 const CharacterDetail = () => {
   const { theme } = useContext(ThemeContext);
-  const { id } = useLocalSearchParams<{ id: string }>();
+  const { id } = useLocalSearchParams<{ id: string }>(); //haalt url paramameter op, destructuring →  pakt alleen de id eruit vb /profile?id=aang , id === "42" // of "aang"
   const [character, setCharacter] = useState<Character | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -29,7 +29,7 @@ const CharacterDetail = () => {
       try {
         const response = await fetch('https://sampleapis.assimilate.be/avatar/characters');
         const data: Character[] = await response.json();
-        const found = data.find((c) => c.id.toString() === id);
+        const found = data.find((c) => c.id.toString() === id); //zoek character op basis van id
         setCharacter(found || null);
       } catch (err) {
         console.log(err);
@@ -69,7 +69,7 @@ const CharacterDetail = () => {
 
   const renderDetail = (label: string, value: any) => {
     if (!value || value === "NA") return null;
-    const formatted = Array.isArray(value) ? value.join(', ') : value;
+    const formatted = Array.isArray(value) ? value.join(', ') : value; //kijkt of het value een array is, zo ja voeg ze samen met een ,komma
     return (
       <Text style={[styles.infoText, { color: colors.textSecondary }]}>
         <Text style={[styles.label, { color: colors.accent }]}>{label}: </Text>

@@ -21,11 +21,14 @@ export default function RootLayout() {
 
 function InnerLayout() {
   const { theme } = useContext(ThemeContext);
-
+{/*  headerricht themetoggle, zorgt er voor dzt in alle paginas rechts in header ik de themetoggle te zien krijg , zit in rootlayout dus alle paginas kan zien*/}
   return (
+    
     <>
       <StatusBar style={theme === "dark" ? "light" : "dark"} />
-      <Stack>
+      <Stack screenOptions={{ 
+    headerRight: () => <ThemeToggle />, 
+  }}>
         <Stack.Screen
           name="login"
           options={{

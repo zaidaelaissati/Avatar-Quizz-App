@@ -8,7 +8,7 @@ export default function Screen() {
   const { initializing, session } = useSupabase();
 
   if (initializing) return <ActivityIndicator style={{ flex: 1 }} />;
-
-  if (session) return <Redirect href="/dashboard" />;
-  return <Redirect href="/login" />;
+// tootn spinner, als jet initialiseert
+  if (session) return <Redirect href="/dashboard" />; //als er al sessie bezig is , als user al is ingelogd, redirecten naar dashboard
+  return <Redirect href="/login" />; //zo niet ingelogd redidcrect nr loginpagina
 }

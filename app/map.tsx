@@ -4,10 +4,6 @@ import MapView, { Marker } from "react-native-maps";
 import { merchStores } from "./MerchData";
 import { Store } from "./types";
 
-
-
-
-
 //enkele icoontjes die getoond worden markers uit images pakken
 const iconMap  = {
   fire: require("../assets/images/vuur.png"),

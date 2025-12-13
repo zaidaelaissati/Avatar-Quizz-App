@@ -1,3 +1,5 @@
+
+
 export interface Character {
   id: number;
   name: string;
@@ -35,3 +37,29 @@ export interface Store {
 
 }
 
+
+
+//quizz
+export type AnswerKey = 'a' | 'b' | 'c' | 'd'; // belangrijk voor welke knop er word gekozen
+// de reden waarom ik dit apart als type en niet inline in de interface eb gedaan is zodat k dit kan hergebruiken
+export interface ApiQuestions {
+    id: number;
+    question: string;
+    possibleAnsers: string[];
+    correctAnswer: string;
+}
+
+export interface Answers {
+    a: string;
+    b: string;
+    c: string;
+    d: string;
+}
+
+export interface QuizQuestion {
+    _id: string;
+    question: string;
+    answers: Answers;
+    correctAnswer: AnswerKey;
+    correctAnswerText: string;
+}

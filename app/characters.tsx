@@ -1,11 +1,19 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { StyleSheet, Text, View, FlatList, ActivityIndicator, Image, Pressable } from 'react-native';
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import {
+  StyleSheet,
+  Text,
+  View,
+  FlatList,
+  ActivityIndicator,
+  Image,
+  Pressable,
+} from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router } from 'expo-router';
 import { ThemeContext } from '@/context/ThemeContext';
 
 // TypeScript Interface voor een enkel personage (gebaseerd op mogelijke API response)
-interface Character {
+export interface Character {
   id: string;
   name: string;
   image: string; // URL naar de afbeelding
@@ -40,10 +48,10 @@ const CharactersScreen = (props: CharactersScreenProps) => {
       setLoading(true);
       setError(null);
       const response = await fetch(API_URL);
-      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`); //checlen op errors
       const data: Character[] = await response.json();
       setCharacters(data);
-      await AsyncStorage.setItem('avatar_characters', JSON.stringify(data));
+      await AsyncStorage.setItem('avatar_characters', JSON.stringify(data)); //charachterls lokaal opgeslagen
     } catch (err: any) {
       setError(`Failed to fetch characters: ${err.message}`);
     } finally {
@@ -51,28 +59,38 @@ const CharactersScreen = (props: CharactersScreenProps) => {
     }
   };
 
-  useEffect(() => { fetchCharacters(); }, []);
+  useEffect(() => {
+    fetchCharacters();
+  }, []);
 
   const renderItem = ({ item }: { item: Character }) => {
-    const imageUrl = item.image && item.image.trim() !== '' 
-      ? item.image 
-      : 'https://via.placeholder.com/100x100?text=NO+IMG';
+    // checlen of er een image is, en lege spaties wegwerken 
+    // als er wel image is dan haal item.Image op van api
+    //zo niet dan toont die image van internet met tekst no image
+    const imageUrl =
+      item.image && item.image.trim() !== ''
+        ? item.image
+        : 'https://dummyimage.com/100x100/cccccc/000000.png&text=NO+IMG';
 
     return (
       <Pressable
-        style={[styles.characterCard, { backgroundColor: colors.card, borderColor: colors.border, shadowColor: colors.shadow }]}
+        style={[
+          styles.characterCard,
+          { backgroundColor: colors.card, borderColor: colors.border, shadowColor: colors.shadow },
+        ]}
         onPress={() => {
           router.push({ pathname: '/character/[id]', params: { id: item.id } });
-        }}
-      >
-        <Image 
+        }}>
+        <Image
           style={[styles.avatarImage, { borderColor: colors.textPrimary }]}
           source={{ uri: imageUrl }}
           resizeMode="cover"
         />
         <View style={styles.textContainer}>
           <Text style={[styles.nameText, { color: colors.textPrimary }]}>{item.name}</Text>
-          <Text style={[styles.detailText, { color: colors.textSecondary }]}>klik voor meer informatie</Text>
+          <Text style={[styles.detailText, { color: colors.textSecondary }]}>
+            klik voor meer informatie
+          </Text>
         </View>
       </Pressable>
     );
@@ -91,7 +109,9 @@ const CharactersScreen = (props: CharactersScreenProps) => {
     return (
       <View style={[styles.container, styles.center, { backgroundColor: colors.bg }]}>
         <Text style={[styles.errorText, { color: colors.textPrimary }]}>{error}</Text>
-        <Pressable style={[styles.retryButton, { backgroundColor: colors.retryBg }]} onPress={fetchCharacters}>
+        <Pressable
+          style={[styles.retryButton, { backgroundColor: colors.retryBg }]}
+          onPress={fetchCharacters}>
           <Text style={styles.retryButtonText}>Try Again</Text>
         </Pressable>
       </View>
@@ -105,7 +125,9 @@ const CharactersScreen = (props: CharactersScreenProps) => {
         renderItem={renderItem}
         keyExtractor={(item) => item.id}
         contentContainerStyle={styles.listContent}
-        ListHeaderComponent={<Text style={[styles.headerText, { color: colors.textPrimary }]}>Avatar Characters</Text>}
+        ListHeaderComponent={
+          <Text style={[styles.headerText, { color: colors.textPrimary }]}>Avatar Characters</Text>
+        }
       />
     </View>
   );
@@ -116,8 +138,26 @@ const styles = StyleSheet.create({
   center: { justifyContent: 'center', alignItems: 'center' },
   listContent: { paddingHorizontal: 15, paddingBottom: 40 },
   headerText: { fontSize: 26, fontWeight: '900', marginBottom: 20, textAlign: 'center' },
-  characterCard: { flexDirection: 'row', borderRadius: 12, padding: 12, marginBottom: 12, alignItems: 'center', borderWidth: 2, shadowOffset: { width: 0, height: 3 }, shadowOpacity: 0.2, shadowRadius: 4, elevation: 3 },
-  avatarImage: { width: 100, height: 100, borderRadius: 50, marginRight: 15, borderWidth: 2, backgroundColor: '#ccc' },
+  characterCard: {
+    flexDirection: 'row',
+    borderRadius: 12,
+    padding: 12,
+    marginBottom: 12,
+    alignItems: 'center',
+    borderWidth: 2,
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  avatarImage: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    marginRight: 15,
+    borderWidth: 2,
+    backgroundColor: '#ccc',
+  },
   textContainer: { flex: 1 },
   nameText: { fontSize: 20, fontWeight: '800' },
   detailText: { fontSize: 14, marginTop: 4, fontStyle: 'italic' },
