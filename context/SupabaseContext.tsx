@@ -91,6 +91,8 @@ const SupabaseProvider = ({ children }: { children: ReactNode }) => {
       console.log(e);
       throw e;
     }
+
+    
   };
   return (
     <SupabaseContext.Provider
@@ -111,3 +113,4 @@ export const useSupabase = () => {
 };
 
 export default SupabaseProvider;
+
