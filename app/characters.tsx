@@ -64,7 +64,7 @@
 //   }, []);
 
 //   const renderItem = ({ item }: { item: Character }) => {
-//     // checlen of er een image is, en lege spaties wegwerken 
+//     // checlen of er een image is, en lege spaties wegwerken
 //     // als er wel image is dan haal item.Image op van api
 //     //zo niet dan toont die image van internet met tekst no image
 //     const imageUrl =
@@ -232,10 +232,11 @@ const CharactersScreen = (props: CharactersScreenProps) => {
   useEffect(() => {
     fetchCharacters();
   }, []);
-//post , add character , met asyncstorzge
+  //post , add character , met asyncstorzge
   const addCharacter = async () => {
     if (!newName.trim()) return alert('Name cannot be empty'); //check of de naamveld leeg is
-    const newChar: Character = { //neieuwe characterobj aanmaken
+    const newChar: Character = {
+      //neieuwe characterobj aanmaken
       id: Date.now().toString(),
       name: newName,
       image: newImage.trim() || 'https://dummyimage.com/100x100/cccccc/000000.png&text=NO+IMG',
@@ -248,7 +249,7 @@ const CharactersScreen = (props: CharactersScreenProps) => {
   };
 
   const renderItem = ({ item }: { item: Character }) => {
-    const imageUrl = //checkt eerst of de character al een afbeelding heeft en trumt lege spaties
+    const imageUrl = //checkt eerst of de character al een afbeelding heeft en trimt lege spaties
       item.image && item.image.trim() !== ''
         ? item.image
         : 'https://dummyimage.com/100x100/cccccc/000000.png&text=NO+IMG';
@@ -261,8 +262,7 @@ const CharactersScreen = (props: CharactersScreenProps) => {
         ]}
         onPress={() => {
           router.push({ pathname: '/character/[id]', params: { id: item.id } });
-        }}
-      >
+        }}>
         <Image
           style={[styles.avatarImage, { borderColor: colors.textPrimary }]}
           source={{ uri: imageUrl }}
@@ -293,8 +293,7 @@ const CharactersScreen = (props: CharactersScreenProps) => {
         <Text style={[styles.errorText, { color: colors.textPrimary }]}>{error}</Text>
         <Pressable
           style={[styles.retryButton, { backgroundColor: colors.retryBg }]}
-          onPress={fetchCharacters}
-        >
+          onPress={fetchCharacters}>
           <Text style={styles.retryButtonText}>Try Again</Text>
         </Pressable>
       </View>
@@ -304,35 +303,35 @@ const CharactersScreen = (props: CharactersScreenProps) => {
   return (
     <View style={[styles.container, { backgroundColor: colors.bg }]}>
       <View style={{ paddingHorizontal: 15, marginBottom: 20 }}>
-<TextInput
-  placeholder="Name"
-  placeholderTextColor={theme === 'light' ? '#888' : '#ccc'}
-  value={newName}
-  onChangeText={setNewName}
-  style={[
-    styles.input,
-    { 
-      backgroundColor: theme === 'light' ? '#fff' : '#1e1e1e',
-      color: theme === 'light' ? '#000' : '#fff',
-      borderColor: theme === 'light' ? '#888' : '#555',
-    },
-  ]}
-/>
+        <TextInput
+          placeholder="Name"
+          placeholderTextColor={theme === 'light' ? '#888' : '#ccc'}
+          value={newName}
+          onChangeText={setNewName}
+          style={[
+            styles.input,
+            {
+              backgroundColor: theme === 'light' ? '#fff' : '#1e1e1e',
+              color: theme === 'light' ? '#000' : '#fff',
+              borderColor: theme === 'light' ? '#888' : '#555',
+            },
+          ]}
+        />
 
-<TextInput
-  placeholder="Image URL"
-  placeholderTextColor={theme === 'light' ? '#888' : '#ccc'}
-  value={newImage}
-  onChangeText={setNewImage}
-  style={[
-    styles.input,
-    { 
-      backgroundColor: theme === 'light' ? '#fff' : '#1e1e1e',
-      color: theme === 'light' ? '#000' : '#fff',
-      borderColor: theme === 'light' ? '#888' : '#555',
-    },
-  ]}
-/>
+        <TextInput
+          placeholder="Image URL"
+          placeholderTextColor={theme === 'light' ? '#888' : '#ccc'}
+          value={newImage}
+          onChangeText={setNewImage}
+          style={[
+            styles.input,
+            {
+              backgroundColor: theme === 'light' ? '#fff' : '#1e1e1e',
+              color: theme === 'light' ? '#000' : '#fff',
+              borderColor: theme === 'light' ? '#888' : '#555',
+            },
+          ]}
+        />
 
         <Button title="Add Character" onPress={addCharacter} color={colors.retryBg} />
       </View>
@@ -375,12 +374,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#ccc',
   },
   input: {
-  borderWidth: 1,
-  borderRadius: 8,
-  padding: 8,
-  marginBottom: 8,
-}
-,
+    borderWidth: 1,
+    borderRadius: 8,
+    padding: 8,
+    marginBottom: 8,
+  },
   textContainer: { flex: 1 },
   nameText: { fontSize: 20, fontWeight: '800' },
   detailText: { fontSize: 14, marginTop: 4, fontStyle: 'italic' },

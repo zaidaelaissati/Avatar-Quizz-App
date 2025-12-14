@@ -17,7 +17,7 @@ const SignupScreen = () => {
   const [password, setPassword] = useState('');
   const [passwordRepeat, setPasswordRepeat] = useState('');
 
-  //togle oogje met pressable om ww te tonen vr users
+  //toggle oogje met pressable om ww te tonen vr users
   const [showPassword, setShowPassword] = useState(false);
   const [showPasswordRepeat, setShowPasswordRepeat] = useState(false);
   const register = async () => {
